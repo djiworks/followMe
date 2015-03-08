@@ -20,3 +20,8 @@ It's based on socket.io library with following events :
 - endOfTrackingSession(sessionCode): Inform client about the end of the session because the leader has aborted
 - newFollower (followerId, followerName): Inform followers that new follower has joined the session
 - followerDeco (followerId, followerName): Inform followers that a follower has left the session
+
+## Roadmap
+- Client app for mobile (Android, iOS)
+- Crypt location with sessionCode
+- Limit number of followers in one session
