@@ -22,6 +22,7 @@ It's based on socket.io library with following events :
 - followerDeco (followerId, followerName): Inform followers that a follower has left the session
 
 ## Roadmap
-- Client app for mobile (Android, iOS)
+- Client apps for mobile (Android, iOS)
 - Crypt location with sessionCode
 - Limit number of followers in one session
+- Session expiration system
