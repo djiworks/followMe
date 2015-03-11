@@ -40,6 +40,8 @@
 		5D228EB81AB01AB700B64429 /* FollowMeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FollowMeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5D228EBD1AB01AB700B64429 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5D228EBE1AB01AB700B64429 /* FollowMeTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FollowMeTests.m; sourceTree = "<group>"; };
+		5D228ECF1AB01E6300B64429 /* Variables.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Variables.h; sourceTree = "<group>"; };
+		5D228ED01AB01FBF00B64429 /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +83,7 @@
 		5D228EA11AB01AB700B64429 /* FollowMe */ = {
 			isa = PBXGroup;
 			children = (
+				5D228ECD1AB01E2500B64429 /* Resources */,
 				5D228ECB1AB01B0400B64429 /* Controller */,
 				5D228ECA1AB01AFD00B64429 /* View */,
 				5D228EC91AB01AF800B64429 /* Model */,
@@ -96,6 +99,7 @@
 			children = (
 				5D228EA31AB01AB700B64429 /* Info.plist */,
 				5D228EA41AB01AB700B64429 /* main.m */,
+				5D228ED01AB01FBF00B64429 /* PrefixHeader.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -157,6 +161,14 @@
 				5D228EAA1AB01AB700B64429 /* ViewController.m */,
 			);
 			name = Home;
+			sourceTree = "<group>";
+		};
+		5D228ECD1AB01E2500B64429 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				5D228ECF1AB01E6300B64429 /* Variables.h */,
+			);
+			name = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -383,6 +395,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				GCC_PREFIX_HEADER = FollowMe/PrefixHeader.pch;
 				INFOPLIST_FILE = FollowMe/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -393,6 +406,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				GCC_PREFIX_HEADER = FollowMe/PrefixHeader.pch;
 				INFOPLIST_FILE = FollowMe/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -452,6 +466,7 @@
 				5D228EC41AB01AB700B64429 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		5D228EC51AB01AB700B64429 /* Build configuration list for PBXNativeTarget "FollowMeTests" */ = {
 			isa = XCConfigurationList;
@@ -460,6 +475,7 @@
 				5D228EC71AB01AB700B64429 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
