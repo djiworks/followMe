@@ -11,6 +11,7 @@
 @interface LocationViewController () {
     CLGeocoder *geocoder;
     CLPlacemark *placemark;
+    NSString *latitude, *longitude, *state, *country;
 }
 
 @end
@@ -19,10 +20,18 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
     
-    [self makeTheView];
-    [self initLocation];
+    // Init objects
+    map = [[MKMapView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, SHEIGHT)];
+    
+    dispatch_queue_t group = dispatch_queue_create("com.main.task", NULL);
+    dispatch_async(group, ^(void) {
+        [self makeTheView];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self initLocation];
+        });
+    });
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -35,6 +44,11 @@
 - (void)makeTheView {
     self.view.backgroundColor = [UIColor colorWithRed:255/255.0f green:255/255.0f blue:255/255.0f alpha:1.0f];
     self.automaticallyAdjustsScrollViewInsets = NO;
+    
+    [map.userLocation addObserver:self forKeyPath:@"location" options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld) context:NULL];
+    map.showsUserLocation = YES;
+    
+    [self.view addSubview:map];
 }
 
 #pragma mark - actions
@@ -72,14 +86,28 @@
         if (error == nil&& [placemarks count] >0) {
             placemark = [placemarks lastObject];
             
-            NSString *latitude, *longitude, *state, *country;
-            
             latitude = [NSString stringWithFormat:@"%f",newLocation.coordinate.latitude];
             longitude = [NSString stringWithFormat:@"%f",newLocation.coordinate.longitude];
             state = placemark.administrativeArea;
             country = placemark.country;
             
             NSLog(@"%@, %@", latitude, longitude);
+            
+            MKCoordinateRegion region;
+            MKCoordinateSpan span;
+            
+            span.latitudeDelta = 0.005;
+            span.longitudeDelta = 0.005;
+            
+            CLLocationCoordinate2D location;
+            
+            location.latitude = newLocation.coordinate.latitude;
+            location.longitude = newLocation.coordinate.longitude;
+            
+            region.span = span;
+            region.center = location;
+            
+            [map setRegion:region animated:YES];
         } else {
             NSLog(@"%@", error.debugDescription);
         }
@@ -92,6 +120,12 @@
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
 {
     NSLog(@"Cannot find the location.");
+}
+
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if ([map isUserLocationVisible]) {
+        [locationManager stopUpdatingLocation];
+    }
 }
 
 @end

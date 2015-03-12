@@ -254,6 +254,7 @@
 				TargetAttributes = {
 					5D228E9E1AB01AB700B64429 = {
 						CreatedOnToolsVersion = 6.0.1;
+						DevelopmentTeam = E5P894ED53;
 					};
 					5D228EB71AB01AB700B64429 = {
 						CreatedOnToolsVersion = 6.0.1;
@@ -433,8 +434,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PREFIX_HEADER = FollowMe/PrefixHeader.pch;
 				INFOPLIST_FILE = FollowMe/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -444,8 +447,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PREFIX_HEADER = FollowMe/PrefixHeader.pch;
 				INFOPLIST_FILE = FollowMe/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

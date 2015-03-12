@@ -123,7 +123,7 @@
     
     [self.view addSubview:btn1design];
     
-    UIImageView *btn1pic = [[UIImageView alloc] initWithFrame:CGRectMake((SWIDTH / 2) - 120, yRep + 55, 30, 29)];
+    UIImageView *btn1pic = [[UIImageView alloc] initWithFrame:CGRectMake(65, yRep + 55, 30, 29)];
     btn1pic.image = [UIImage imageNamed:@"ic_home_connect.png"];
     
     [self.view addSubview:btn1pic];

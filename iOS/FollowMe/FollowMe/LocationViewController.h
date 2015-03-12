@@ -8,9 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
+#import <MapKit/MapKit.h>
 
 @interface LocationViewController : UIViewController <CLLocationManagerDelegate> {
     CLLocationManager *locationManager;
+    MKMapView *map;
 }
 
 @end
