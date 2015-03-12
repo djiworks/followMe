@@ -8,6 +8,8 @@
 
 #import "ViewController.h"
 
+#import "LocationViewController.h"
+
 @interface ViewController ()
 
 @end
@@ -26,19 +28,33 @@
     // Dispose of any resources that can be recreated.
 }
 
-#pragma mark - UI (could also be generated in view via storyboard)
+#pragma mark - UI
 
 - (void)makeTheView {
     self.view.backgroundColor = [UIColor colorWithRed:237/255.0f green:237/255.0f blue:237/255.0f alpha:1.0f];
     self.automaticallyAdjustsScrollViewInsets = NO;
     
-    int yRep = 50;
+    /** Background **/
+    UIImageView *background = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SWIDTH, SHEIGHT)];
+    background.image = [UIImage imageNamed:@"bc_home_font.png"];
+    
+    [self.view addSubview:background];
+    int yRep = 100;
     
     /** Logo area **/
-    UIView *whitearea = [[UIView alloc] initWithFrame:CGRectMake(0, yRep + 2, SWIDTH, SWIDTH - 40)];
-    whitearea.backgroundColor = [UIColor whiteColor];
+    UIView *whitearea = [[UIView alloc] initWithFrame:CGRectMake(20, yRep + 2, SWIDTH - 40, SWIDTH - 40)];
+    whitearea.backgroundColor = [UIColor colorWithRed:255/255.0f green:255/255.0f blue:255/255.0f alpha:0.1];
     
     [self.view addSubview:whitearea];
+    
+    UIVisualEffect *blurEffect;
+    blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+    
+    UIVisualEffectView *visualEffectView;
+    visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+    
+    visualEffectView.frame = whitearea.bounds;
+    [whitearea addSubview:visualEffectView];
     yRep += 20;
     
     /** Logo **/
@@ -92,26 +108,35 @@
     yRep += 170;
     
     /** Connection **/
+    UIButton *btn1 = [[UIButton alloc] initWithFrame:CGRectMake(60, yRep + 50, SWIDTH - 120, 40)];
+    btn1.backgroundColor = [UIColor whiteColor];
+    [btn1.layer setCornerRadius:8.0];
+    [btn1 addTarget:self action:@selector(connectController) forControlEvents:UIControlEventTouchUpInside];
+    
+    [self.view addSubview:btn1];
+    
     UILabel *btn1design = [[UILabel alloc] initWithFrame:CGRectMake(0, yRep + 50, SWIDTH, 40)];
-    btn1design.textColor = [UIColor whiteColor];
+    btn1design.textColor = [UIColor colorWithRed:33/255.0f green:49/255.0f blue:120/255.0f alpha:1.0f];
     btn1design.font = [UIFont fontWithName:@"Arial" size:20];
     btn1design.text = @"Connexion";
     btn1design.textAlignment = NSTextAlignmentCenter;
     
     [self.view addSubview:btn1design];
     
-    UIButton *btn1 = [[UIButton alloc] initWithFrame:CGRectMake(0, yRep + 50, SWIDTH, 40)];
-    [btn1 addTarget:self action:@selector(connectController) forControlEvents:UIControlEventTouchUpInside];
+    UIImageView *btn1pic = [[UIImageView alloc] initWithFrame:CGRectMake((SWIDTH / 2) - 120, yRep + 55, 30, 29)];
+    btn1pic.image = [UIImage imageNamed:@"ic_home_connect.png"];
     
-    [self.view addSubview:btn1];
+    [self.view addSubview:btn1pic];
+    
     yRep += btn1.frame.size.height + 20;
     
 }
 
-#pragma mark - ACTIONS
+#pragma mark - actions
 
 - (void)connectController {
-    NSLog(@"Connection...");
+    LocationViewController *lvc = [[LocationViewController alloc] init];
+    [self.navigationController pushViewController:lvc animated:YES];
 }
 
 @end

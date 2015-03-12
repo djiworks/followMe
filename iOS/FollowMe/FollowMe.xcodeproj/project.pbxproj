@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5D046CFE1AB142DE00990806 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D046CFD1AB142DE00990806 /* CoreLocation.framework */; };
+		5D046D021AB1432700990806 /* LocationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D046D011AB1432700990806 /* LocationViewController.m */; };
+		5D046D081AB1465F00990806 /* Licenses_list.txt in Resources */ = {isa = PBXBuildFile; fileRef = 5D046D061AB1465F00990806 /* Licenses_list.txt */; };
+		5D046D0F1AB14BD800990806 /* bc_home_font.png in Resources */ = {isa = PBXBuildFile; fileRef = 5D046D0E1AB14BD800990806 /* bc_home_font.png */; };
+		5D046D151AB154EC00990806 /* ic_home_connect.png in Resources */ = {isa = PBXBuildFile; fileRef = 5D046D141AB154EC00990806 /* ic_home_connect.png */; };
 		5D228EA51AB01AB700B64429 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D228EA41AB01AB700B64429 /* main.m */; };
 		5D228EA81AB01AB700B64429 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D228EA71AB01AB700B64429 /* AppDelegate.m */; };
 		5D228EAB1AB01AB700B64429 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D228EAA1AB01AB700B64429 /* ViewController.m */; };
@@ -27,6 +32,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5D046CFD1AB142DE00990806 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		5D046D001AB1432700990806 /* LocationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationViewController.h; sourceTree = "<group>"; };
+		5D046D011AB1432700990806 /* LocationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationViewController.m; sourceTree = "<group>"; };
+		5D046D061AB1465F00990806 /* Licenses_list.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Licenses_list.txt; sourceTree = "<group>"; };
+		5D046D0E1AB14BD800990806 /* bc_home_font.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bc_home_font.png; sourceTree = "<group>"; };
+		5D046D141AB154EC00990806 /* ic_home_connect.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_home_connect.png; sourceTree = "<group>"; };
 		5D228E9F1AB01AB700B64429 /* FollowMe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FollowMe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5D228EA31AB01AB700B64429 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5D228EA41AB01AB700B64429 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -49,6 +60,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5D046CFE1AB142DE00990806 /* CoreLocation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -62,9 +74,29 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5D046CFF1AB142F500990806 /* Location */ = {
+			isa = PBXGroup;
+			children = (
+				5D046D001AB1432700990806 /* LocationViewController.h */,
+				5D046D011AB1432700990806 /* LocationViewController.m */,
+			);
+			name = Location;
+			sourceTree = "<group>";
+		};
+		5D046D031AB1460300990806 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				5D046D141AB154EC00990806 /* ic_home_connect.png */,
+				5D046D0E1AB14BD800990806 /* bc_home_font.png */,
+				5D046D061AB1465F00990806 /* Licenses_list.txt */,
+			);
+			name = Images;
+			sourceTree = "<group>";
+		};
 		5D228E961AB01AB700B64429 = {
 			isa = PBXGroup;
 			children = (
+				5D046CFD1AB142DE00990806 /* CoreLocation.framework */,
 				5D228EA11AB01AB700B64429 /* FollowMe */,
 				5D228EBB1AB01AB700B64429 /* FollowMeTests */,
 				5D228EA01AB01AB700B64429 /* Products */,
@@ -149,6 +181,7 @@
 		5D228ECB1AB01B0400B64429 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				5D046CFF1AB142F500990806 /* Location */,
 				5D228ECC1AB01B3000B64429 /* Home */,
 			);
 			name = Controller;
@@ -166,6 +199,7 @@
 		5D228ECD1AB01E2500B64429 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				5D046D031AB1460300990806 /* Images */,
 				5D228ECF1AB01E6300B64429 /* Variables.h */,
 			);
 			name = Resources;
@@ -254,6 +288,9 @@
 				5D228EAE1AB01AB700B64429 /* Main.storyboard in Resources */,
 				5D228EB31AB01AB700B64429 /* LaunchScreen.xib in Resources */,
 				5D228EB01AB01AB700B64429 /* Images.xcassets in Resources */,
+				5D046D151AB154EC00990806 /* ic_home_connect.png in Resources */,
+				5D046D0F1AB14BD800990806 /* bc_home_font.png in Resources */,
+				5D046D081AB1465F00990806 /* Licenses_list.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -274,6 +311,7 @@
 				5D228EAB1AB01AB700B64429 /* ViewController.m in Sources */,
 				5D228EA81AB01AB700B64429 /* AppDelegate.m in Sources */,
 				5D228EA51AB01AB700B64429 /* main.m in Sources */,
+				5D046D021AB1432700990806 /* LocationViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
