@@ -29,7 +29,7 @@ registerTrackingSessionCode = (socket) ->
 
 joinTrackingSession = (sessionCode, followerName, socket) ->
   logger 'Join', "#{followerName} is trying to join #{sessionCode}"
-  followerId = socket['id']
+  followerId = socket.id
   session = registrations[sessionCode]
   if _.isObject(session)
     logger 'Join', "Tracking session found: #{sessionCode}"
@@ -55,13 +55,13 @@ abortTrackingSession = (socket) ->
       logger 'Join', "Sending leader deconnection for session: #{sessionCode}"
       socket.broadcast.to(sessionCode).emit 'endOfTrackingSession', sessionCode
     if socket.isFollower
-      logger 'Join', "Sending follower deconnection: #{socket['id']}"
+      logger 'Join', "Sending follower deconnection: #{socket.id}"
       socket.broadcast.to(sessionCode).emit 'followerDeco', followerId
       , socket.followerName
       
 
 informLocationUpdate = (socket, location) ->
-  followerId = socket['id']
+  followerId = socket.id
   sessionCode = socket.trackingSessionCode
   session = registrations[sessionCode]
   if _.isObject session
@@ -69,7 +69,7 @@ informLocationUpdate = (socket, location) ->
     socket.broadcast.to(sessionCode).emit 'newLocation', followerId, location
 
 io.sockets.on 'connection', (socket) ->
-  logger 'Connection', "New socket found: #{socket['id']}"
+  logger 'Connection', "New socket found: #{socket.id}"
 
   socket.on 'startTrackingSession', ->
     socket.emit 'setSessionCode', registerTrackingSessionCode socket
