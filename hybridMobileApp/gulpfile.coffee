@@ -6,10 +6,11 @@ sass      = require 'gulp-sass'
 minifyCss = require 'gulp-minify-css'
 rename    = require 'gulp-rename'
 sh        = require 'shelljs'
+coffee    = require 'gulp-coffee'
 
-paths = sass: ['./scss/**/*.scss']
-
-gulp.task 'default', ['sass']
+paths =
+  sass: ['./scss/**/*.scss']
+  coffee: ['./coffee/**/*.coffee']
 
 gulp.task 'sass', (done) ->
   gulp.src('./scss/ionic.app.scss')
@@ -21,8 +22,14 @@ gulp.task 'sass', (done) ->
     .on 'end', done
   return
 
-gulp.task 'watch', ->
-  gulp.watch paths.sass, ['sass']
+gulp.task 'coffee', (done) ->
+  gulp.src(paths.coffee)
+  .pipe(coffee({bare: true})
+  .on('error', gutil.log.bind(gutil, 'Coffee Error')))
+  .pipe(concat('app.js'))
+  .pipe(gulp.dest('./www/js'))
+  .on('end', done)
+  return
 
 gulp.task 'install', ['git-check'], ->
   return bower.commands.install()
@@ -39,3 +46,10 @@ gulp.task 'git-check', (done) ->
     + gutil.colors.cyan('gulp install') + '\' again.'
     process.exit 1
   done()
+
+
+gulp.task 'watch', ->
+  gulp.watch paths.sass, ['sass']
+  gulp.watch paths.coffee, ['coffee']
+
+gulp.task 'default', ['sass', 'coffee']
