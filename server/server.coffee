@@ -54,6 +54,8 @@ abortTrackingSession = (socket) ->
     if socket.isLeader
       logger 'Join', "Sending leader deconnection for session: #{sessionCode}"
       socket.broadcast.to(sessionCode).emit 'endOfTrackingSession', sessionCode
+      delete registrations[sessionCode]
+    
     if socket.isFollower
       logger 'Join', "Sending follower deconnection: #{socket.id}"
       socket.broadcast.to(sessionCode).emit 'followerDeco', followerId
@@ -83,6 +85,9 @@ io.sockets.on 'connection', (socket) ->
   socket.on 'updateTracking', (location) ->
     logger 'Location',"Transfer location of: #{socket.id}"
     informLocationUpdate socket, location
+
+  socket.on 'leaveTrackingSession', ->
+    abortTrackingSession socket
 
   socket.on 'disconnect', ->
     logger 'Connection',"Socket lost: #{socket.id}"
