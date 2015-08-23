@@ -1,7 +1,7 @@
 var socket = null;
 var curSessionCode = null;
 var gMap = null;
-var markers = [];
+var markers = {};
 var locationWatcher = null;
 var modalTextMsg = {
   map: 'Getting map. Please wait...',
@@ -10,6 +10,7 @@ var modalTextMsg = {
   connect: 'Try to connect. Please wait...'
 }
 var myLocation = null;
+var leaderLocation = null;
 
 function showModalText (type) {
   document.getElementById('modalText').innerText = modalTextMsg[type];
@@ -20,8 +21,8 @@ function getLocation (cb) {
   navigator.geolocation.getCurrentPosition(function(position) {
     cb(position.coords.latitude, position.coords.longitude);
     myLocation = {lat: position.coords.latitude, lng: position.coords.longitude};
+    updateLocation(position.coords.latitude, position.coords.longitude);
   });
-
 };
 
 
@@ -30,13 +31,56 @@ function startTracking () {
     updateLocation(position.coords.latitude, position.coords.longitude);
     myLocation = {lat: position.coords.latitude, lng: position.coords.longitude};
   });
+
+  socket.on('newFollower', function(followerId, followerName, isLeader) {});
+
+  socket.on('newLocation', function(followerId, location, isLeader) {
+    if (markers[followerId]) {
+      markers[followerId].setPosition(location);
+      if (isLeader) {
+        leaderLocation = location;
+      }
+    }
+    else
+    {
+      type = ''
+      if (isLeader) {
+        type = 'leader'
+        leaderLocation = location;
+      }
+      newMarker(followerId, location, type, 'Follower');
+    }
+  });
+
+  socket.on('followerDeco', function(followerId, followerName) {
+    marker = markers[followerId]
+    if (marker) {
+      marker.setMap(null);
+      delete markers[followerId]
+    }
+  });
+
+  socket.on('endOfTrackingSession', function() {
+    socket.removeAllListeners('endOfTrackingSession');
+    socket.removeAllListeners('followerDeco');
+    socket.removeAllListeners('newLocation');
+    socket.removeAllListeners('newFollower');
+
+    if (locationWatcher) {
+      navigator.geolocation.clearWatch(locationWatcher);
+    }
+    markers = {};
+    leaderLocation = null;
+    myNavigator.resetToPage("register.html");
+  });
+
 }
 
 function updateLocation (lat, lng) {
-  socket.emit('updateTracking', {lat: lat, lng:lng});
+  socket.emit('updateTracking', {lat: lat, lng: lng});
 };
 
-function newMarker (location, type, label) {
+function newMarker (id, location, type, label) {
   var marker;
   if (type == 'leader') {
     marker = new google.maps.Marker({
@@ -61,7 +105,7 @@ function newMarker (location, type, label) {
         label: label
       });
     }
-  markers.push(marker);
+  markers[id] = marker;
 }
 
 (function() {
@@ -84,7 +128,7 @@ function newMarker (location, type, label) {
       sessionCode = document.getElementById("joinSessionCode").value
       if (sessionCode && sessionCode != '') {
         showModalText('join');
-        socket.emit('joinTrackingSession', sessionCode, 'Test');
+        socket.emit('joinTrackingSession', sessionCode, 'Follower');
         successJoin = function () {
           myNavigator.pushPage('map.html');
           modal.hide();
@@ -146,7 +190,7 @@ function newMarker (location, type, label) {
         disableDefaultUI: true
       };
       gMap = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-      newMarker(latlng, 'myself');
+      newMarker(socket.id, latlng, 'myself');
       modal.hide();
       startTracking();
     });
@@ -165,7 +209,7 @@ function newMarker (location, type, label) {
     }
 
     $scope.centerOnLeader = function () {
-      gMap.setCenter({lat: 24.8150107, lng: -67.0247243});
+      gMap.setCenter(leaderLocation);
     }
 
   });
