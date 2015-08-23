@@ -23,7 +23,7 @@ function updateLocation (lat, lng) {
   socket.emit('updateTracking', {lat: lat, lng:lng});
 };
 
-function newMarker (location, type) {
+function newMarker (location, type, label) {
   var marker;
   if (type == 'leader') {
     marker = new google.maps.Marker({
@@ -44,8 +44,8 @@ function newMarker (location, type) {
     {
       marker = new google.maps.Marker({
         position: location,
-        map: gMap
-        //label: 
+        map: gMap,
+        label: label
       });
     }
   markers.push(marker);
@@ -58,10 +58,50 @@ function newMarker (location, type) {
     $scope.getSessionCode = function(){
       modalSession.show();
       socket.emit('startTrackingSession');
-      socket.on('setSessionCode', function(sessionCode) {
+      storeSessionCode = function(sessionCode) {
         myNavigator.pushPage('session.html');
         curSessionCode = sessionCode;
-      });
+        socket.removeListener('setSessionCode', storeSessionCode);
+      };
+      socket.on('setSessionCode', storeSessionCode);
+    };
+
+
+    $scope.joinSession = function () {
+      sessionCode = document.getElementById("joinSessionCode").value
+      if (sessionCode && sessionCode != '') {
+        modalJoin.show();
+        socket.emit('joinTrackingSession', sessionCode, 'Test');
+        successJoin = function () {
+          myNavigator.pushPage('map.html');
+          modalJoin.hide();
+          socket.removeListener('joinedSession', successJoin);
+        };
+        socket.on('joinedSession', successJoin);
+
+        failedJoin = function () {
+          modalJoin.hide();
+          ons.notification.alert({
+            message: 'sessionCode unknown',
+            title: 'Session code error',
+            buttonLabel: 'OK',
+            animation: 'default',
+            callback: function() {}
+          });
+          socket.removeListener('noSession', failedJoin);
+        };
+        socket.on('noSession', failedJoin);
+      }
+      else
+      {
+        ons.notification.alert({
+          message: 'Wrong sessionCode entered.',
+          title: 'Session code error',
+          buttonLabel: 'OK',
+          animation: 'default',
+          callback: function() {}
+        });
+      }
     };
     
   });
@@ -75,6 +115,10 @@ function newMarker (location, type) {
     }
     else {
       myNavigator.popPage();
+    }
+
+    $scope.leaveSession = function () {
+      socket.emit('leaveTrackingSession');
     }
   });
 
@@ -94,11 +138,12 @@ function newMarker (location, type) {
       startTracking();
     });
 
-    $scope.leaveSessions = function () {
+    $scope.leaveSession = function () {
       if (locationWatcher) {
         navigator.geolocation.clearWatch(locationWatcher);
       }
       myNavigator.resetToPage("register.html");
+      socket.emit('leaveTrackingSession');
       // TODO emit exiSession to execute a followerDeco or abortTrackingSession
     }
   });
@@ -121,6 +166,7 @@ function newMarker (location, type) {
         buttonLabel: 'OK',
         animation: 'default',
         callback: function() {
+          modalConnection.show();
           socket.connect();
         }
       });

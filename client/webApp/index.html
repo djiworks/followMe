@@ -29,9 +29,9 @@
         </div>
 
         <div class="login-form">
-          <input type="text" class="text-input--underbar input-session" placeholder="Session ID" value="">
+          <input type="text" class="text-input--underbar input-session" placeholder="Session ID" id="joinSessionCode">
           <br/><br/>
-          <button class="button button--large" ng-click="navController.pushPage('map.html');">Join session</button>
+          <button class="button button--large" ng-click="joinSession();">Join session</button>
           <br/> OR <br/><br/>
           <button class="button button--large--cta" ng-click="getSessionCode();">Start session</button>
         </div>
@@ -42,7 +42,7 @@
       <ons-toolbar>
         <div class="center">Session</div>
         <div class="left">
-          <ons-back-button>
+          <ons-back-button ng-click="leaveSession();">
             Back
           </ons-back-button>
         </div>
@@ -74,7 +74,7 @@
           </ons-back-button>
         </div>
         <div class="right">
-          <ons-toolbar-button ng-click="leaveSessions();">
+          <ons-toolbar-button ng-click="leaveSession();">
             <ons-icon icon="ion-android-exit" fixed-width="false" style="font-size: 26px; vertical-align: -4px;"></ons-icon>
           </ons-toolbar-button>
         </div>
@@ -125,6 +125,12 @@
     <ons-icon icon="ion-load-c" spin="true"></ons-icon>
     <br><br>
     Getting map. Please wait...
+  </ons-modal>
+
+  <ons-modal var="modalJoin">
+    <ons-icon icon="ion-load-c" spin="true"></ons-icon>
+    <br><br>
+    Trying to join session. Please wait...
   </ons-modal>
 
 
