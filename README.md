@@ -19,7 +19,7 @@ It's based on socket.io library with following events :
 - joinedSession / noSession(sessionCode): Inform client about his joinTrackingSession request
 - newLocation (followerId, location): Inform client about location update from other follower
 - endOfTrackingSession(sessionCode): Inform client about the end of the session because the leader has aborted
-- newFollower (followerId, followerName): Inform followers that new follower has joined the session
+- newFollower (followerId, followerName, isLeader): Inform followers that new follower has joined the session
 - followerDeco (followerId, followerName): Inform followers that a follower has left the session
 
 ## Roadmap
