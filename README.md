@@ -11,7 +11,8 @@ It's based on socket.io library with following events :
 ### Server-side:
 -   startTrackingSession: On connection, client asks to server a registration code which is also the session code to share
 - joinTrackingSession (sessionCode, followerName): To join a location tracker session from a session code
-- updateTracking (location): To ask server to transfer a location to other followers 
+- updateTracking (location): To ask server to transfer a location to other followers
+- leaveTrackingSession: Stop session
 
 ### Client-side:
 - setSessionCode (sessionCode): Server sends the token to share in this event
