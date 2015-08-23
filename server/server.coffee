@@ -78,7 +78,7 @@ informLocationUpdate = (socket, location) ->
   session = registrations[sessionCode]
   if _.isObject session
     logger 'Location', "Transfer location to session: #{sessionCode}"
-    socket.broadcast.to(sessionCode).emit 'newLocation', followerId, location
+    socket.broadcast.to(sessionCode).emit 'newLocation', followerId, location, socket.isLeader
 
 io.sockets.on 'connection', (socket) ->
   logger 'Connection', "New socket found: #{socket.id}"
