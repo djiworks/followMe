@@ -21,7 +21,10 @@ registerTrackingSessionCode = (socket) ->
   logger 'Registration', "New registration code affected: #{sessionCode}"
   socket.trackingSessionCode = sessionCode
   socket.isLeader = true
-  registrations[sessionCode] = state: 'running'
+  socket.followerName = 'Leader'
+  registrations[sessionCode] =
+    state: 'running'
+    followers: [socket]
   
   socket.join sessionCode
   return sessionCode
@@ -38,6 +41,11 @@ joinTrackingSession = (sessionCode, followerName, socket) ->
     socket.trackingSessionCode = sessionCode
     socket.isFollower = true
 
+    logger 'Join', 'Sending other follower to new follower'
+    _.each session.followers, (follower) ->
+      socket.emit 'newFollower', follower.id, follower.followerName, socket.isLeader
+
+    session.followers.push socket
     logger 'Join', "Sending new follower to session: #{sessionCode}"
     socket.broadcast.to(sessionCode).emit 'newFollower', followerId
     , followerName
@@ -50,6 +58,8 @@ joinTrackingSession = (sessionCode, followerName, socket) ->
 abortTrackingSession = (socket) ->
   sessionCode = socket.trackingSessionCode
   session = registrations[sessionCode]
+  followerId = socket.id
+
   if _.isObject session
     if socket.isLeader
       logger 'Join', "Sending leader deconnection for session: #{sessionCode}"
