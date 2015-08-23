@@ -9,6 +9,7 @@ var modalTextMsg = {
   session: 'Getting sessionCode. Please wait...',
   connect: 'Try to connect. Please wait...'
 }
+var myLocation = null;
 
 function showModalText (type) {
   document.getElementById('modalText').innerText = modalTextMsg[type];
@@ -18,6 +19,7 @@ function showModalText (type) {
 function getLocation (cb) {
   navigator.geolocation.getCurrentPosition(function(position) {
     cb(position.coords.latitude, position.coords.longitude);
+    myLocation = {lat: position.coords.latitude, lng: position.coords.longitude};
   });
 
 };
@@ -26,6 +28,7 @@ function getLocation (cb) {
 function startTracking () {
   locationWatcher = navigator.geolocation.watchPosition(function(position) {
     updateLocation(position.coords.latitude, position.coords.longitude);
+    myLocation = {lat: position.coords.latitude, lng: position.coords.longitude};
   });
 }
 
@@ -156,6 +159,15 @@ function newMarker (location, type, label) {
       socket.emit('leaveTrackingSession');
       // TODO emit exiSession to execute a followerDeco or abortTrackingSession
     }
+
+    $scope.centerOnMe = function () {
+      gMap.setCenter(myLocation);
+    }
+
+    $scope.centerOnLeader = function () {
+      gMap.setCenter({lat: 24.8150107, lng: -67.0247243});
+    }
+
   });
 
 
