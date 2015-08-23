@@ -3,7 +3,17 @@ var curSessionCode = null;
 var gMap = null;
 var markers = [];
 var locationWatcher = null;
+var modalTextMsg = {
+  map: 'Getting map. Please wait...',
+  join: 'Trying to join session. Please wait...',
+  session: 'Getting sessionCode. Please wait...',
+  connect: 'Try to connect. Please wait...'
+}
 
+function showModalText (type) {
+  document.getElementById('modalText').innerText = modalTextMsg[type];
+  modal.show();
+}
 
 function getLocation (cb) {
   navigator.geolocation.getCurrentPosition(function(position) {
@@ -56,7 +66,7 @@ function newMarker (location, type, label) {
 
   app.controller('registerController', function($scope, $timeout){
     $scope.getSessionCode = function(){
-      modalSession.show();
+      showModalText('session');
       socket.emit('startTrackingSession');
       storeSessionCode = function(sessionCode) {
         myNavigator.pushPage('session.html');
@@ -70,17 +80,17 @@ function newMarker (location, type, label) {
     $scope.joinSession = function () {
       sessionCode = document.getElementById("joinSessionCode").value
       if (sessionCode && sessionCode != '') {
-        modalJoin.show();
+        showModalText('join');
         socket.emit('joinTrackingSession', sessionCode, 'Test');
         successJoin = function () {
           myNavigator.pushPage('map.html');
-          modalJoin.hide();
+          modal.hide();
           socket.removeListener('joinedSession', successJoin);
         };
         socket.on('joinedSession', successJoin);
 
         failedJoin = function () {
-          modalJoin.hide();
+          modal.hide();
           ons.notification.alert({
             message: 'sessionCode unknown',
             title: 'Session code error',
@@ -110,7 +120,7 @@ function newMarker (location, type, label) {
     if(curSessionCode) {
       $timeout(function(){
        document.getElementById("inputSessionCode").value = curSessionCode;
-       modalSession.hide();
+       modal.hide();
       }, 100);
     }
     else {
@@ -123,7 +133,7 @@ function newMarker (location, type, label) {
   });
 
   app.controller('MapController', function($scope){
-    modalMap.show();
+    showModalText('map');
     getLocation(function(lat, lon){
       var latlng = new google.maps.LatLng(lat, lon);
       var myOptions = {
@@ -134,7 +144,7 @@ function newMarker (location, type, label) {
       };
       gMap = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
       newMarker(latlng, 'myself');
-      modalMap.hide();
+      modal.hide();
       startTracking();
     });
 
@@ -150,23 +160,23 @@ function newMarker (location, type, label) {
 
 
   ons.ready(function() {
-    modalConnection.show();
+    showModalText('connect');
     socket = io.connect('http://localhost:9595', {
       reconnection: false
     });
     socket.on('connect', function(){
-      modalConnection.hide();
+      modal.hide();
     });
 
     socket.on('connect_error', function(){
-      modalConnection.hide();
+      modal.hide();
       ons.notification.alert({
         message: 'Connection error. Please connect to Internet',
         title: 'Connection error',
         buttonLabel: 'OK',
         animation: 'default',
         callback: function() {
-          modalConnection.show();
+          showModalText('connect');
           socket.connect();
         }
       });
