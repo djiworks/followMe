@@ -102,8 +102,8 @@
           </button>
         </label>
 
-        <label class="tab-bar__item">
-          <input type="radio" name="tab-bar-a">
+        <label class="tab-bar__item" id="followerTab">
+          <input type="radio" name="tab-bar-a" ng-click="popover.show('#followerTab');">
           <button class="tab-bar__button">
             <i class="tab-bar__icon ion-person-stalker"></i>
             <div class="tab-bar__label">Followers</div>
@@ -113,6 +113,15 @@
     </ons-page>
   </ons-template>
 
+  <ons-popover cancelable var="popover">
+    <ons-list ng-controller="FollowersController">
+      <ons-list-item ng-repeat="f in followers">
+        <ons-icon icon="ion-person" size="25px"></ons-icon>
+        {{f.name}} {{f.isLeader ? '(Leader)' : ''}}
+      </ons-list-item>
+    </ons-list>
+  </ons-popover>
+  
   <ons-modal var="modal">
     <ons-icon icon="ion-load-c" spin="true"></ons-icon>
     <br><br>

@@ -13,6 +13,8 @@ var myLocation = null;
 var leaderLocation = null;
 var iAmLeader = false;
 
+var followers = {};
+
 function showModalText (type) {
   document.getElementById('modalText').innerText = modalTextMsg[type];
   modal.show();
@@ -39,7 +41,9 @@ function startTracking () {
     }
   });
 
-  socket.on('newFollower', function(followerId, followerName, isLeader) {});
+  socket.on('newFollower', function(followerId, followerName, isLeader) {
+    followers[followerId] = {name: followerName, isLeader: isLeader};
+  });
 
   socket.on('newLocation', function(followerId, location, isLeader) {
     if (markers[followerId]) {
@@ -65,6 +69,7 @@ function startTracking () {
       marker.setMap(null);
       delete markers[followerId]
     }
+    delete followers[followerId];
   });
 
   socket.on('endOfTrackingSession', function() {
@@ -188,6 +193,7 @@ function newMarker (id, location, type, label) {
   });
 
   app.controller('MapController', function($scope){
+    followers[socket.id] = {name: 'Me', isLeader: iAmLeader};
     showModalText('map');
     getLocation(function(lat, lon){
       var latlng = new google.maps.LatLng(lat, lon);
@@ -219,6 +225,10 @@ function newMarker (id, location, type, label) {
       gMap.setCenter(leaderLocation);
     }
 
+  });
+
+  app.controller('FollowersController', function($scope){
+    $scope.followers = followers;
   });
 
 
