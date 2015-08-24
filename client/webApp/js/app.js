@@ -11,6 +11,7 @@ var modalTextMsg = {
 }
 var myLocation = null;
 var leaderLocation = null;
+var iAmLeader = false;
 
 function showModalText (type) {
   document.getElementById('modalText').innerText = modalTextMsg[type];
@@ -22,6 +23,9 @@ function getLocation (cb) {
     cb(position.coords.latitude, position.coords.longitude);
     myLocation = {lat: position.coords.latitude, lng: position.coords.longitude};
     updateLocation(position.coords.latitude, position.coords.longitude);
+    if (iAmLeader) {
+      leaderLocation = myLocation;
+    }
   });
 };
 
@@ -30,6 +34,9 @@ function startTracking () {
   locationWatcher = navigator.geolocation.watchPosition(function(position) {
     updateLocation(position.coords.latitude, position.coords.longitude);
     myLocation = {lat: position.coords.latitude, lng: position.coords.longitude};
+    if (iAmLeader) {
+      leaderLocation = myLocation;
+    }
   });
 
   socket.on('newFollower', function(followerId, followerName, isLeader) {});
@@ -119,6 +126,7 @@ function newMarker (id, location, type, label) {
         myNavigator.pushPage('session.html');
         curSessionCode = sessionCode;
         socket.removeListener('setSessionCode', storeSessionCode);
+        iAmLeader = true;
       };
       socket.on('setSessionCode', storeSessionCode);
     };
@@ -201,7 +209,6 @@ function newMarker (id, location, type, label) {
       }
       myNavigator.resetToPage("register.html");
       socket.emit('leaveTrackingSession');
-      // TODO emit exiSession to execute a followerDeco or abortTrackingSession
     }
 
     $scope.centerOnMe = function () {
@@ -217,7 +224,7 @@ function newMarker (id, location, type, label) {
 
   ons.ready(function() {
     showModalText('connect');
-    socket = io.connect('http://localhost:9595', {
+    socket = io.connect('http://192.168.1.67:9595', {
       reconnection: false
     });
     socket.on('connect', function(){
