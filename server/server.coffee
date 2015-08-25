@@ -24,7 +24,9 @@ registerTrackingSessionCode = (socket) ->
   socket.followerName = 'Leader'
   registrations[sessionCode] =
     state: 'running'
-    followers: [socket]
+    followers: {}
+
+  registrations[sessionCode].followers[socket.id] = socket
   
   socket.join sessionCode
   return sessionCode
@@ -36,19 +38,14 @@ joinTrackingSession = (sessionCode, followerName, socket) ->
   session = registrations[sessionCode]
   if _.isObject(session)
     logger 'Join', "Tracking session found: #{sessionCode}"
-    socket.join sessionCode
     socket.followerName = followerName
     socket.trackingSessionCode = sessionCode
-    socket.isFollower = true
-
-    logger 'Join', 'Sending other follower to new follower'
-    _.each session.followers, (follower) ->
-      socket.emit 'newFollower', follower.id, follower.followerName, socket.isLeader
-
-    session.followers.push socket
+    socket.isLeader = false
+    session.followers[socket.id] = socket
+    
+    socket.join sessionCode
     logger 'Join', "Sending new follower to session: #{sessionCode}"
-    socket.broadcast.to(sessionCode).emit 'newFollower', followerId
-    , followerName
+    socket.broadcast.to(sessionCode).emit 'newFollower', followerId, followerName, socket.isLeader
     return true
   else
     logger 'Join', "Tracking session not found: #{sessionCode}"
@@ -66,7 +63,7 @@ abortTrackingSession = (socket) ->
       socket.broadcast.to(sessionCode).emit 'endOfTrackingSession', sessionCode
       delete registrations[sessionCode]
     
-    if socket.isFollower
+    else
       logger 'Join', "Sending follower deconnection: #{socket.id}"
       socket.broadcast.to(sessionCode).emit 'followerDeco', followerId
       , socket.followerName
@@ -80,6 +77,16 @@ informLocationUpdate = (socket, location) ->
     logger 'Location', "Transfer location to session: #{sessionCode}"
     socket.broadcast.to(sessionCode).emit 'newLocation', followerId, location, socket.isLeader
 
+
+notifyFollower = (socket, followerId) ->
+  sessionCode = socket.trackingSessionCode
+  session = registrations[sessionCode]
+  dest = session.followers[followerId]
+  if dest
+    logger 'Join', 'Relay presence'
+    dest.emit 'newFollower', socket.id, socket.followerName, socket.isLeader
+
+
 io.sockets.on 'connection', (socket) ->
   logger 'Connection', "New socket found: #{socket.id}"
 
@@ -92,6 +99,9 @@ io.sockets.on 'connection', (socket) ->
     else
       socket.emit 'noSession', sessionCode
 
+  socket.on 'notifyFollower', (followerId) ->
+    notifyFollower socket, followerId
+
   socket.on 'updateTracking', (location) ->
     logger 'Location',"Transfer location of: #{socket.id}"
     informLocationUpdate socket, location
@@ -102,6 +112,7 @@ io.sockets.on 'connection', (socket) ->
   socket.on 'disconnect', ->
     logger 'Connection',"Socket lost: #{socket.id}"
     abortTrackingSession socket
+
 
 server.listen port, (err) ->
   logger 'Server', "Start server on #{host}:#{port}"
