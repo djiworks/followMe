@@ -13,6 +13,7 @@ It's based on socket.io library with following events :
 - joinTrackingSession (sessionCode, followerName): To join a location tracker session from a session code
 - updateTracking (location): To ask server to transfer a location to other followers
 - leaveTrackingSession: Stop session
+- notifyFollower (followerId): To ask server to notify follower socket id, the caller exists
 
 ### Client-side:
 - setSessionCode (sessionCode): Server sends the token to share in this event
