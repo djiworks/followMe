@@ -7,6 +7,10 @@
   "repository": "",
   "author": "Djothi Grondin",
   "license": "All right reserved",
+  "scripts": {
+    "server": "npx coffee server/server.coffee",
+    "client": "npx http-server client/webApp -p 3050"
+  },
   "dependencies": {
     "socket.io": "^1.3.4",
     "shortid": "^2.1.3",

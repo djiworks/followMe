@@ -47,7 +47,7 @@ function startTracking () {
 
   socket.on('newLocation', function(followerId, location, isLeader) {
     if (markers[followerId]) {
-      markers[followerId].setPosition(location);
+      markers[followerId].setLatLng(new L.latLng(location));
       if (isLeader) {
         leaderLocation = location;
       }
@@ -66,8 +66,8 @@ function startTracking () {
   socket.on('followerDeco', function(followerId, followerName) {
     marker = markers[followerId]
     if (marker) {
-      marker.setMap(null);
-      delete markers[followerId]
+      gMap.removeLayer(marker);
+      delete markers[followerId];
     }
     delete followers[followerId];
   });
@@ -95,27 +95,24 @@ function updateLocation (lat, lng) {
 function newMarker (id, location, type, label) {
   var marker;
   if (type == 'leader') {
-    marker = new google.maps.Marker({
-    position: location,
-    map: gMap,
-    icon: 'img/target2.png'
+    var leaderMarker = L.AwesomeMarkers.icon({
+      markerColor: 'red'
     });
+    marker = L.marker(location, {icon: leaderMarker}).addTo(gMap);
   }
   else
     if (type == 'myself') {
-      marker = new google.maps.Marker({
-      position: location,
-      map: gMap,
-      icon: 'img/target.png'
+      var meMarker = L.AwesomeMarkers.icon({
+        markerColor: 'green'
       });
+      marker = L.marker(location, {icon: meMarker}).addTo(gMap);
     }
     else
     {
-      marker = new google.maps.Marker({
-        position: location,
-        map: gMap,
-        label: label
+      var otherMarker = L.AwesomeMarkers.icon({
+        markerColor: 'blue'
       });
+      marker = L.marker(location, {icon: otherMarker}).addTo(gMap);
     }
   markers[id] = marker;
 }
@@ -196,14 +193,17 @@ function newMarker (id, location, type, label) {
     followers[socket.id] = {name: 'Me', isLeader: iAmLeader};
     showModalText('map');
     getLocation(function(lat, lon){
-      var latlng = new google.maps.LatLng(lat, lon);
+      var latlng = new L.LatLng(lat, lon);
       var myOptions = {
         zoom: 14,
         center: latlng,
-        mapTypeId: google.maps.MapTypeId.ROADMAP,
-        disableDefaultUI: true
+        layers: [
+          new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+              'attribution': 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+          })
+      ]
       };
-      gMap = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+      gMap = new L.Map('map_canvas', myOptions);
       newMarker(socket.id, latlng, 'myself');
       modal.hide();
       startTracking();
@@ -218,11 +218,11 @@ function newMarker (id, location, type, label) {
     }
 
     $scope.centerOnMe = function () {
-      gMap.setCenter(myLocation);
+      gMap.panTo(new L.LatLng(myLocation.lat, myLocation.lng));
     }
 
     $scope.centerOnLeader = function () {
-      gMap.setCenter(leaderLocation);
+      gMap.panTo(new L.LatLng(leaderLocation.lat, myLocation.lng));
     }
 
   });
@@ -234,17 +234,17 @@ function newMarker (id, location, type, label) {
 
   ons.ready(function() {
     showModalText('connect');
-    socket = io.connect('http://192.168.1.67:9595', {
+    socket = io.connect('http://192.168.1.4:9595', {
       reconnection: false
     });
     socket.on('connect', function(){
       modal.hide();
     });
 
-    socket.on('connect_error', function(){
+    socket.on('connect_error', function(err){
       modal.hide();
       ons.notification.alert({
-        message: 'Connection error. Please connect to Internet',
+        message: 'There is a problem while trying to connect.',
         title: 'Connection error',
         buttonLabel: 'OK',
         animation: 'default',
