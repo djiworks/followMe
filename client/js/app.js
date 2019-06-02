@@ -198,7 +198,7 @@ function newMarker (id, location, type, label) {
         zoom: 14,
         center: latlng,
         layers: [
-          new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
               'attribution': 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
           })
       ]
