@@ -8,7 +8,7 @@ registrations = {}
 host = '0.0.0.0'
 PORT = process.env.PORT || '3000'
 INDEX = path.join(__dirname, '..', 'client','index.html');
-MAX_SESSION = 1;
+MAX_SESSION = 10;
 MAX_FOLLOWERS = 3;
 
 logger =  (type, message) ->

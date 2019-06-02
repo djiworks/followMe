@@ -20,9 +20,9 @@
 
   INDEX = path.join(__dirname, '..', 'client', 'index.html');
 
-  MAX_SESSION = 1;
+  MAX_SESSION = 10;
 
-  MAX_FOLLOWERS = 1;
+  MAX_FOLLOWERS = 3;
 
   logger = function(type, message) {
     var date;
