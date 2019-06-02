@@ -5,7 +5,7 @@ _       = require 'underscore'
 
 registrations = {}
 host = '0.0.0.0'
-port = '9595'
+port = '80'
 
 logger =  (type, message) ->
   date = new Date().toISOString()
