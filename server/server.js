@@ -14,7 +14,7 @@
 
   host = '0.0.0.0';
 
-  port = '9595';
+  port = '3000';
 
   logger = function(type, message) {
     var date;
@@ -130,8 +130,8 @@
     });
   });
 
-  server.listen(port, function(err) {
-    return logger('Server', "Start server on " + host + ":" + port);
+  server.listen(process.env.PORT || port, function(err) {
+    return logger('Server', "Start server on " + host + ":" + (process.env.PORT || port));
   });
 
 }).call(this);

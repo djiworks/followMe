@@ -5,7 +5,7 @@ _       = require 'underscore'
 
 registrations = {}
 host = '0.0.0.0'
-port = '80'
+port = '3000'
 
 logger =  (type, message) ->
   date = new Date().toISOString()
@@ -114,5 +114,5 @@ io.sockets.on 'connection', (socket) ->
     abortTrackingSession socket
 
 
-server.listen port, (err) ->
-  logger 'Server', "Start server on #{host}:#{port}"
+server.listen (process.env.PORT || port), (err) ->
+  logger 'Server', "Start server on #{host}:#{process.env.PORT || port}"
