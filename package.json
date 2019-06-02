@@ -9,7 +9,8 @@
   "license": "All right reserved",
   "scripts": {
     "server": "npx coffee server/server.coffee",
-    "client": "npx http-server client/webApp -p 3050"
+    "client": "npx http-server client/webApp -p 3050",
+    "build_server": "npx coffee -c server/server.coffee"
   },
   "dependencies": {
     "socket.io": "^1.3.4",
