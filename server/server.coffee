@@ -87,7 +87,7 @@ abortTrackingSession = (socket) ->
       logger 'Join', "Sending follower deconnection: #{socket.id}"
       socket.broadcast.to(sessionCode).emit 'followerDeco', followerId
       , socket.followerName
-      
+      delete session.followers[socket.id]
 
 informLocationUpdate = (socket, location) ->
   followerId = socket.id

@@ -101,7 +101,8 @@
         return delete registrations[sessionCode];
       } else {
         logger('Join', "Sending follower deconnection: " + socket.id);
-        return socket.broadcast.to(sessionCode).emit('followerDeco', followerId, socket.followerName);
+        socket.broadcast.to(sessionCode).emit('followerDeco', followerId, socket.followerName);
+        return delete session.followers[socket.id];
       }
     }
   };

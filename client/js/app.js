@@ -235,7 +235,7 @@ function newMarker (id, location, type, label) {
     }
 
     $scope.centerOnLeader = function () {
-      gMap.panTo(new L.LatLng(leaderLocation.lat, myLocation.lng));
+      gMap.panTo(new L.LatLng(leaderLocation.lat, leaderLocation.lng));
     }
 
   });
