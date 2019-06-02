@@ -9,6 +9,7 @@
   "license": "All right reserved",
   "scripts": {
     "server": "npx coffee server/server.coffee",
+    "start": "node server/server.js",
     "client": "npx http-server client/webApp -p 3050",
     "build_server": "npx coffee -c server/server.coffee"
   },
