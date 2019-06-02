@@ -1,0 +1,140 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+
+    <link rel="stylesheet" href="css/onsenui.css">
+    <link rel="stylesheet" href="css/onsen-css-components-blue-basic-theme.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
+   integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+   crossorigin=""/>
+   <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/1.5.2/css/ionicons.min.css">
+   <link rel="stylesheet" href="css/leaflet.awesome-markers.css">
+
+   <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
+   integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
+   crossorigin=""></script>
+   <script src="js/leaflet.awesome-markers.min.js"></script>
+    <script src="js/angular/angular.js"></script>
+    <script src="js/onsenui.js"></script>
+    <script src="js/socketio.min.js"></script>
+    <script src="js/app.js"></script>
+  </head>
+  <body>
+    <ons-navigator animation="slide" var="myNavigator">
+      <div ons-loading-placeholder="register.html">
+        Loading My Application...
+      </div>
+    </ons-navigator>
+
+  <ons-template id="register.html">
+    <ons-page ng-controller="registerController">
+        <div class="profile-card">
+          <img src="img/logo.png" class="profile-image">
+          <div class="profile-name">Follow Me</div>
+          <div class="profile-desc">Never lost your friends again</div>
+        </div>
+
+        <div class="login-form">
+          <input type="text" class="text-input--underbar input-session" placeholder="Session ID" id="joinSessionCode">
+          <br/><br/>
+          <button class="button button--large" ng-click="joinSession();">Join session</button>
+          <br/> OR <br/><br/>
+          <button class="button button--large--cta" ng-click="getSessionCode();">Start session</button>
+        </div>
+      </ons-page>
+    </ons-template>
+  <ons-template id="session.html">
+    <ons-page ng-controller="SessionController">
+      <ons-toolbar>
+        <div class="center">Session</div>
+        <div class="left">
+          <ons-back-button ng-click="leaveSession();">
+            Back
+          </ons-back-button>
+        </div>
+        <div class="right">
+          <ons-toolbar-button>
+            <ons-icon icon="ion-share" fixed-width="false" style="font-size: 26px; vertical-align: -4px;"></ons-icon>
+          </ons-toolbar-button>
+        </div>
+      </ons-toolbar>
+      <div class="dialog session-card">
+        <div class="page">
+          <h1>Session ID</h1>
+          <h2>Share this code with followers</h2>
+          <input type="text" class="text-input text-input-align text-input-margin" id="inputSessionCode" readonly>
+          <br/>
+          <button class="button button--outline" ng-click="myNavigator.pushPage('map.html');">Go</button>
+        </div>
+      </div>
+    </ons-page>
+  </ons-template>
+
+  <ons-template id="map.html">
+    <ons-page id="mapPg" ng-controller="MapController">
+      <ons-toolbar>
+        <div class="center">Map</div>
+        <div class="left">
+          <ons-back-button>
+            Back
+          </ons-back-button>
+        </div>
+        <div class="right">
+          <ons-toolbar-button ng-click="leaveSession();">
+            <ons-icon icon="ion-android-exit" fixed-width="false" style="font-size: 26px; vertical-align: -4px;"></ons-icon>
+          </ons-toolbar-button>
+        </div>
+      </ons-toolbar>
+      <div id="map_canvas"></div>
+      <!--<ons-tabbar>
+        <ons-tab active="true" label="Me" icon="ion-navigate" ng-click="centerOnMe();" ng-controller="MapController"></ons-tab>
+        <ons-tab label="Leader" icon="ion-android-locate" ng-click="centerOnLeader();" ng-controller="MapController"></ons-tab>
+        <ons-tab label="Followers" icon="ion-person-stalker" ng-controller="MapController"></ons-tab>
+      </ons-tabbar>-->
+      <div class="tab-bar">
+        <label class="tab-bar__item">
+          <input type="radio" name="tab-bar-a" checked="checked" ng-click="centerOnMe();">
+          <button class="tab-bar__button">
+            <i class="tab-bar__icon ion-navigate"></i>
+            <div class="tab-bar__label">Me</div>
+          </button>
+        </label>
+
+        <label class="tab-bar__item">
+          <input type="radio" name="tab-bar-a" ng-click="centerOnLeader();">
+          <button class="tab-bar__button">
+            <i class="tab-bar__icon ion-android-locate"></i>
+            <div class="tab-bar__label">Leader</div>
+          </button>
+        </label>
+
+        <label class="tab-bar__item" id="followerTab">
+          <input type="radio" name="tab-bar-a" ng-click="popover.show('#followerTab');">
+          <button class="tab-bar__button">
+            <i class="tab-bar__icon ion-person-stalker"></i>
+            <div class="tab-bar__label">Followers</div>
+          </button>
+        </label>
+      </div>
+    </ons-page>
+  </ons-template>
+
+  <ons-popover cancelable var="popover">
+    <ons-list ng-controller="FollowersController">
+      <ons-list-item ng-repeat="f in followers">
+        <ons-icon icon="ion-person" size="25px"></ons-icon>
+        {{f.name}} {{f.isLeader ? '(Leader)' : ''}}
+      </ons-list-item>
+    </ons-list>
+  </ons-popover>
+  
+  <ons-modal var="modal">
+    <ons-icon icon="ion-load-c" spin="true"></ons-icon>
+    <br><br>
+    <p id="modalText"></p>
+  </ons-modal>
+
+  </body>
+</html>
