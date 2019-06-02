@@ -10,12 +10,12 @@
   "scripts": {
     "server": "npx coffee server/server.coffee",
     "start": "node server/server.js",
-    "client": "npx http-server client/webApp -p 3050",
     "build_server": "npx coffee -c server/server.coffee"
   },
   "dependencies": {
-    "socket.io": "^1.3.4",
+    "express": "4.17.1",
     "shortid": "^2.1.3",
+    "socket.io": "^1.3.4",
     "underscore": "^1.8.2"
   },
   "devDependencies": {

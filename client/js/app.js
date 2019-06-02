@@ -234,14 +234,13 @@ function newMarker (id, location, type, label) {
 
   ons.ready(function() {
     showModalText('connect');
-    socket = io.connect('https://followme-server.herokuapp.com:9595', {
-      reconnection: false
-    });
+    socket = io.connect();
     socket.on('connect', function(){
       modal.hide();
     });
 
     socket.on('connect_error', function(err){
+      console.log(err, '......')
       modal.hide();
       ons.notification.alert({
         message: 'There is a problem while trying to connect.',

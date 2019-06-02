@@ -1,16 +1,23 @@
-server  = require('http').createServer()
-io      = require('socket.io')(server)
+express = require 'express'
+socketIO = require('socket.io')
 shortId = require 'shortid'
 _       = require 'underscore'
+path = require('path')
 
 registrations = {}
 host = '0.0.0.0'
-port = '3000'
+PORT = process.env.PORT || '3000'
+INDEX = path.join(__dirname, '..', 'client','index.html');
 
 logger =  (type, message) ->
   date = new Date().toISOString()
   console.log "[#{date}] - #{type} - #{message}"
 
+server = express()
+  .use(express.static('client'))
+  .use (req, res) -> res.sendFile(INDEX)
+  .listen PORT, () -> logger 'Server', "Start server on #{host}:#{process.env.PORT || PORT}"
+io = socketIO(server)
 
 registerTrackingSessionCode = (socket) ->
   logger 'Registration', 'Trying to get new Registration code...'
@@ -112,7 +119,3 @@ io.sockets.on 'connection', (socket) ->
   socket.on 'disconnect', ->
     logger 'Connection',"Socket lost: #{socket.id}"
     abortTrackingSession socket
-
-
-server.listen (process.env.PORT || port), (err) ->
-  logger 'Server', "Start server on #{host}:#{process.env.PORT || port}"
