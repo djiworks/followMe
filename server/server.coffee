@@ -8,6 +8,8 @@ registrations = {}
 host = '0.0.0.0'
 PORT = process.env.PORT || '3000'
 INDEX = path.join(__dirname, '..', 'client','index.html');
+MAX_SESSION = 1;
+MAX_FOLLOWERS = 1;
 
 logger =  (type, message) ->
   date = new Date().toISOString()
@@ -21,6 +23,11 @@ io = socketIO(server)
 
 registerTrackingSessionCode = (socket) ->
   logger 'Registration', 'Trying to get new Registration code...'
+  curCount = _.keys(registrations).length
+  if curCount >= MAX_SESSION 
+    logger 'Registration', "Failed: #{curCount} on #{MAX_SESSION} space available"
+    return null
+
   sessionCode = shortId.generate()
   while ! _.isUndefined(registrations[sessionCode])
     sessionCode = shortId.generate()
@@ -45,6 +52,12 @@ joinTrackingSession = (sessionCode, followerName, socket) ->
   session = registrations[sessionCode]
   if _.isObject(session)
     logger 'Join', "Tracking session found: #{sessionCode}"
+    curCount = _.keys(session.followers).length
+    if curCount >= MAX_FOLLOWERS
+      logger 'Join', "Failed: #{curCount} on #{MAX_FOLLOWERS} followers available"
+      # Should return something else to differenciate not found from full space
+      return null
+
     socket.followerName = followerName
     socket.trackingSessionCode = sessionCode
     socket.isLeader = false

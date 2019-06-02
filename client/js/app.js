@@ -125,6 +125,17 @@ function newMarker (id, location, type, label) {
       showModalText('session');
       socket.emit('startTrackingSession');
       storeSessionCode = function(sessionCode) {
+        if (!sessionCode) {
+          ons.notification.alert({
+            message: 'Sorry, but there is no more session available. Please retry later.',
+            title: 'Full server use',
+            buttonLabel: 'OK',
+            animation: 'default',
+            callback: function() {}
+          });
+          socket.removeListener('setSessionCode', storeSessionCode);
+          return
+        }
         myNavigator.pushPage('session.html');
         curSessionCode = sessionCode;
         socket.removeListener('setSessionCode', storeSessionCode);
