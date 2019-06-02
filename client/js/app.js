@@ -43,6 +43,7 @@ function startTracking () {
 
   socket.on('newFollower', function(followerId, followerName, isLeader) {
     followers[followerId] = {name: followerName, isLeader: isLeader};
+    socket.emit('notifyFollower', followerId);
   });
 
   socket.on('newLocation', function(followerId, location, isLeader) {
