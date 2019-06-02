@@ -134,6 +134,7 @@ function newMarker (id, location, type, label) {
             callback: function() {}
           });
           socket.removeListener('setSessionCode', storeSessionCode);
+          modal.hide();
           return
         }
         myNavigator.pushPage('session.html');
