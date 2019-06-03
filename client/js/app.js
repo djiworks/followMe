@@ -12,8 +12,10 @@ var modalTextMsg = {
 var myLocation = null;
 var leaderLocation = null;
 var iAmLeader = false;
+var centerOnLeader = false;
 
 var followers = {};
+L.AwesomeMarkers.Icon.prototype.options.prefix = 'ion';
 
 function showModalText (type) {
   document.getElementById('modalText').innerText = modalTextMsg[type];
@@ -39,6 +41,9 @@ function startTracking () {
     if (iAmLeader) {
       leaderLocation = myLocation;
     }
+    markers[socket.id].setLatLng(new L.latLng(myLocation))
+    if (!centerOnLeader)
+      gMap.panTo(myLocation)
   });
 
   socket.on('newFollower', function(followerId, followerName, isLeader) {
@@ -51,6 +56,8 @@ function startTracking () {
       markers[followerId].setLatLng(new L.latLng(location));
       if (isLeader) {
         leaderLocation = location;
+        if (centerOnLeader)
+          gMap.panTo(myLocation)
       }
     }
     else
@@ -97,21 +104,24 @@ function newMarker (id, location, type, label) {
   var marker;
   if (type == 'leader') {
     var leaderMarker = L.AwesomeMarkers.icon({
-      markerColor: 'red'
+      markerColor: 'red',
+      icon: 'ion-ios-basket'
     });
     marker = L.marker(location, {icon: leaderMarker}).addTo(gMap);
   }
   else
     if (type == 'myself') {
       var meMarker = L.AwesomeMarkers.icon({
-        markerColor: 'green'
+        markerColor: 'green',
+        icon: 'ion-md-locate'
       });
       marker = L.marker(location, {icon: meMarker}).addTo(gMap);
     }
     else
     {
       var otherMarker = L.AwesomeMarkers.icon({
-        markerColor: 'blue'
+        markerColor: 'blue',
+        icon: 'ion-md-home'
       });
       marker = L.marker(location, {icon: otherMarker}).addTo(gMap);
     }
@@ -231,10 +241,12 @@ function newMarker (id, location, type, label) {
     }
 
     $scope.centerOnMe = function () {
+      centerOnLeader = false
       gMap.panTo(new L.LatLng(myLocation.lat, myLocation.lng));
     }
 
     $scope.centerOnLeader = function () {
+      centerOnLeader = true
       gMap.panTo(new L.LatLng(leaderLocation.lat, leaderLocation.lng));
     }
 
@@ -253,7 +265,6 @@ function newMarker (id, location, type, label) {
     });
 
     socket.on('connect_error', function(err){
-      console.log(err, '......')
       modal.hide();
       ons.notification.alert({
         message: 'There is a problem while trying to connect.',

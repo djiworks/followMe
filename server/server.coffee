@@ -9,7 +9,7 @@ host = '0.0.0.0'
 PORT = process.env.PORT || '3000'
 INDEX = path.join(__dirname, '..', 'client','index.html');
 MAX_SESSION = 10;
-MAX_FOLLOWERS = 3;
+MAX_FOLLOWERS = 2;
 
 logger =  (type, message) ->
   date = new Date().toISOString()
@@ -101,11 +101,12 @@ informLocationUpdate = (socket, location) ->
 notifyFollower = (socket, followerId) ->
   sessionCode = socket.trackingSessionCode
   session = registrations[sessionCode]
-  dest = session.followers[followerId]
-  if dest
-    logger 'Join', 'Relay presence'
-    dest.emit 'newFollower', socket.id, socket.followerName, socket.isLeader
 
+  if session
+    dest = session.followers[followerId]
+    if dest
+      logger 'Join', 'Relay presence'
+      dest.emit 'newFollower', socket.id, socket.followerName, socket.isLeader
 
 io.sockets.on 'connection', (socket) ->
   logger 'Connection', "New socket found: #{socket.id}"
